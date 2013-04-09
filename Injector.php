@@ -4,7 +4,7 @@ class Injector
 {
     private $procs = array();
     
-    public function register($class, $func) 
+    public function register($class, Closure $func) 
     {
         if (class_exists($class)) {
             $this->procs[$class] = $func;
@@ -19,8 +19,8 @@ class Injector
             return false;
         }
         if (func_num_args() > 1) {
-            //array_unshift($args, $this->procs);
-            return $this->procs[$class]($this->procs, $args);
+            array_unshift($args, $this);
+            return call_user_func_array($this->procs[$class], $args);
         } else {
             return $this->procs[$class]($this->procs);
         }
